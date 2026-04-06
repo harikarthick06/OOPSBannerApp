@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 public class BannerPattern {
 
     static class CharacterPattern {
@@ -18,8 +21,10 @@ public class BannerPattern {
         }
     }
 
-    public static CharacterPattern getOPattern() {
-        return new CharacterPattern('O', new String[] {
+    public static Map<Character, CharacterPattern> createPatternMap() {
+        Map<Character, CharacterPattern> patternMap = new HashMap<>();
+
+        patternMap.put('O', new CharacterPattern('O', new String[]{
             " *** ",
             "*   *",
             "*   *",
@@ -27,11 +32,9 @@ public class BannerPattern {
             "*   *",
             "*   *",
             " *** "
-        });
-    }
+        }));
 
-    public static CharacterPattern getPPattern() {
-        return new CharacterPattern('P', new String[] {
+        patternMap.put('P', new CharacterPattern('P', new String[]{
             "*****",
             "*   *",
             "*   *",
@@ -39,11 +42,9 @@ public class BannerPattern {
             "*    ",
             "*    ",
             "*    "
-        });
-    }
+        }));
 
-    public static CharacterPattern getSPattern() {
-        return new CharacterPattern('S', new String[] {
+        patternMap.put('S', new CharacterPattern('S', new String[]{
             " ****",
             "*    ",
             "*    ",
@@ -51,23 +52,31 @@ public class BannerPattern {
             "    *",
             "    *",
             " ****"
-        });
+        }));
+
+        return patternMap;
     }
 
-    public static String[] getBannerLines() {
-        CharacterPattern o1 = getOPattern();
-        CharacterPattern o2 = getOPattern();
-        CharacterPattern p = getPPattern();
-        CharacterPattern s = getSPattern();
-
+    public static String[] getBannerLines(String word) {
+        Map<Character, CharacterPattern> patternMap = createPatternMap();
         String[] lines = new String[7];
 
         for (int i = 0; i < 7; i++) {
-            lines[i] = String.join("   ",
-                    o1.getPattern()[i],
-                    o2.getPattern()[i],
-                    p.getPattern()[i],
-                    s.getPattern()[i]);
+            StringBuilder lineBuilder = new StringBuilder();
+
+            for (int j = 0; j < word.length(); j++) {
+                char ch = word.charAt(j);
+                CharacterPattern cp = patternMap.get(ch);
+
+                if (cp != null) {
+                    lineBuilder.append(cp.getPattern()[i]);
+                    if (j < word.length() - 1) {
+                        lineBuilder.append("   ");
+                    }
+                }
+            }
+
+            lines[i] = lineBuilder.toString();
         }
 
         return lines;
